@@ -12,9 +12,9 @@ export class Contact {
   email: string;
 
   @Column({ nullable: true })
-  phone: string;
+  phone: string | null;
 
   @Column({ nullable: true })
-  address: string;
+  address: string | null;
 }
 
