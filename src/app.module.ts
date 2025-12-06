@@ -7,7 +7,7 @@ import { Contact } from './contacts/entities/contact.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'contacts.db',
+      database: process.env.DATABASE_PATH || 'contacts.db',
       entities: [Contact],
       synchronize: true, // Only for development - creates tables automatically
     }),
