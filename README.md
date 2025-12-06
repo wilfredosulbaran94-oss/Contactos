@@ -81,3 +81,41 @@ DELETE /contacts/:id
 
 The SQLite database file (`contacts.db`) will be created automatically in the project root when you first run the application.
 
+## Docker
+
+### Prerequisites
+
+Make sure Docker is running on your machine:
+```bash
+# Check if Docker is running
+docker ps
+```
+
+### Build the Docker Image
+
+```bash
+docker build -t contactos .
+```
+
+### Run with Docker
+
+```bash
+# Run the container
+docker run -p 3000:3000 -v $(pwd)/data:/app/data contactos
+```
+
+### Run with Docker Compose
+
+```bash
+# Build and start
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop
+docker-compose down
+```
+
+The database will be persisted in the `./data` directory on your host machine.
+

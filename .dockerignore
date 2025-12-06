@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+dist
+coverage
+.git
+.gitignore
+.env
+*.db
+*.sqlite
+*.sqlite3
+.DS_Store
+README.md
+.vscode
+.idea
+.github
+docker-compose.yml
+build.sh
