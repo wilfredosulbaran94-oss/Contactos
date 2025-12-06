@@ -11,6 +11,9 @@ export class ContactsService {
     @InjectRepository(Contact)
     private contactRepository: Repository<Contact>,
   ) {}
-  
+
+  create(createContactDto: CreateContactDto): Promise<Contact> {
+    return this.contactRepository.save(createContactDto);
+  }
 }
 
