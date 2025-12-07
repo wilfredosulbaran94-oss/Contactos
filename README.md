@@ -28,7 +28,34 @@ npm run start:prod
 
 The API will be available at `http://localhost:3000`
 
+## API Documentation
+
+Swagger documentation is available at: **http://localhost:3000/api**
+
+You can explore and test all API endpoints interactively through the Swagger UI.
+
 ## API Endpoints
+
+### Health Check
+```bash
+GET /health
+```
+
+Returns the application health status including:
+- `status`: Application status (`ok` or `error`)
+- `timestamp`: Current timestamp
+- `uptime`: Application uptime in seconds
+- `database`: Database connection status (`connected` or `disconnected`)
+
+Example response:
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-01T12:00:00.000Z",
+  "uptime": 3600,
+  "database": "connected"
+}
+```
 
 ### Create a Contact
 ```bash
@@ -80,6 +107,36 @@ DELETE /contacts/:id
 ## Database
 
 The SQLite database file (`contacts.db`) will be created automatically in the project root when you first run the application.
+
+## OpenTelemetry
+
+The project includes OpenTelemetry instrumentation for distributed tracing and observability.
+
+### Configuration
+
+OpenTelemetry is automatically initialized when the application starts. Configure it using environment variables:
+
+- `SERVICE_NAME` - Name of the service (default: `contactos-api`)
+- `SERVICE_VERSION` - Version of the service (default: `1.0.0`)
+- `OTEL_EXPORTER_OTLP_ENDPOINT` - OTLP endpoint URL (optional, if not set, traces won't be exported)
+
+### Example Usage
+
+```bash
+# Run with OpenTelemetry exporting to a collector
+SERVICE_NAME=contactos-api \
+SERVICE_VERSION=1.0.0 \
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318/v1/traces \
+npm run start:dev
+```
+
+### Supported Instrumentations
+
+The following are automatically instrumented:
+- HTTP requests (Express)
+- Database queries (TypeORM)
+- System metrics
+- And more via `@opentelemetry/auto-instrumentations-node`
 
 ## Docker
 
