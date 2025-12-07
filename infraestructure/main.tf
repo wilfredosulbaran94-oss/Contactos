@@ -1,15 +1,5 @@
-# Register required resource provider (Microsoft.OperationalInsights is auto-registered by Terraform)
-# If already registered, import with: terraform import azurerm_resource_provider_registration.app /subscriptions/edf5bac7-aa05-4b29-9f51-2d8c0a386a3f/providers/Microsoft.App
-resource "azurerm_resource_provider_registration" "app" {
-  name = "Microsoft.App"
-
-  lifecycle {
-    create_before_destroy = false
-    prevent_destroy       = true
-  }
-}
-
 # Resource Group
+# Note: Microsoft.App provider should already be registered in your subscription
 resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
   location = var.location
@@ -18,10 +8,6 @@ resource "azurerm_resource_group" "main" {
     environment = "production"
     app         = var.app_name
   }
-
-  depends_on = [
-    azurerm_resource_provider_registration.app
-  ]
 }
 
 # Log Analytics Workspace (required for Container Apps)
@@ -40,6 +26,7 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 # Container Apps Environment
+# Note: Microsoft.App provider should already be registered in your subscription
 resource "azurerm_container_app_environment" "main" {
   name                       = "${var.app_name}-env"
   location                   = azurerm_resource_group.main.location
@@ -50,8 +37,4 @@ resource "azurerm_container_app_environment" "main" {
     environment = "production"
     app         = var.app_name
   }
-
-  depends_on = [
-    azurerm_resource_provider_registration.app
-  ]
 }
