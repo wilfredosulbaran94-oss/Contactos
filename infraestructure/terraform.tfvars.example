@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and update with your values
+
+subscription_id = "edf5bac7-aa05-4b29-9f51-2d8c0a386a3f"
+resource_group_name = "rg-contactos"
+location = "eastus"
+app_name = "contactos"
+
