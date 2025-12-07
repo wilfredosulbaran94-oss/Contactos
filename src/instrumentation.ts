@@ -1,20 +1,20 @@
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-otlp-http';
-import { Resource } from '@opentelemetry/resources';
-import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
+import { RuntimeNodeInstrumentation } from '@opentelemetry/instrumentation-runtime-node';
+
+const prometheusPort = parseInt(process.env.PROMETHEUS_PORT || '9464');
+const prometheusExporter = new PrometheusExporter({
+  port: prometheusPort,
+});
+
+// Start the Prometheus server
+prometheusExporter.startServer();
 
 const sdk = new NodeSDK({
-  resource: new Resource({
-    [SEMRESATTRS_SERVICE_NAME]: process.env.SERVICE_NAME || 'contactos-api',
-    [SEMRESATTRS_SERVICE_VERSION]: process.env.SERVICE_VERSION || '1.0.0',
-  }),
-  traceExporter: process.env.OTEL_EXPORTER_OTLP_ENDPOINT
-    ? new OTLPTraceExporter({
-        url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
-      })
-    : undefined,
-  instrumentations: [getNodeAutoInstrumentations()],
+  metricReader: prometheusExporter,
+  instrumentations: [
+    new RuntimeNodeInstrumentation(),
+  ],
 });
 
 // Initialize the SDK

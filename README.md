@@ -110,33 +110,43 @@ The SQLite database file (`contacts.db`) will be created automatically in the pr
 
 ## OpenTelemetry
 
-The project includes OpenTelemetry instrumentation for distributed tracing and observability.
+The project includes OpenTelemetry instrumentation with Prometheus exporter for metrics collection.
 
 ### Configuration
 
 OpenTelemetry is automatically initialized when the application starts. Configure it using environment variables:
 
-- `SERVICE_NAME` - Name of the service (default: `contactos-api`)
-- `SERVICE_VERSION` - Version of the service (default: `1.0.0`)
-- `OTEL_EXPORTER_OTLP_ENDPOINT` - OTLP endpoint URL (optional, if not set, traces won't be exported)
+- `PROMETHEUS_PORT` - Port for Prometheus metrics endpoint (default: `9464`)
+- `MONITORING_PRECISION` - Monitoring precision in milliseconds (default: `5000`)
+
+### Prometheus Metrics
+
+Metrics are exposed at: `http://localhost:9464/metrics`
+
+The runtime instrumentation captures Node.js runtime metrics including:
+- Garbage collection events
+- Event loop utilization
+- Memory usage
+- CPU usage
 
 ### Example Usage
 
 ```bash
-# Run with OpenTelemetry exporting to a collector
-SERVICE_NAME=contactos-api \
-SERVICE_VERSION=1.0.0 \
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318/v1/traces \
+# Run with default Prometheus port (9464)
 npm run start:dev
+
+# Run with custom Prometheus port
+PROMETHEUS_PORT=9464 MONITORING_PRECISION=5000 npm run start:dev
 ```
 
-### Supported Instrumentations
+### Accessing Metrics
 
-The following are automatically instrumented:
-- HTTP requests (Express)
-- Database queries (TypeORM)
-- System metrics
-- And more via `@opentelemetry/auto-instrumentations-node`
+Once the application is running, you can access Prometheus metrics at:
+```
+http://localhost:9464/metrics
+```
+
+This endpoint can be scraped by Prometheus or any other monitoring system that supports Prometheus format.
 
 ## Docker
 
