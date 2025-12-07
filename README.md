@@ -28,7 +28,34 @@ npm run start:prod
 
 The API will be available at `http://localhost:3000`
 
+## API Documentation
+
+Swagger documentation is available at: **http://localhost:3000/api**
+
+You can explore and test all API endpoints interactively through the Swagger UI.
+
 ## API Endpoints
+
+### Health Check
+```bash
+GET /health
+```
+
+Returns the application health status including:
+- `status`: Application status (`ok` or `error`)
+- `timestamp`: Current timestamp
+- `uptime`: Application uptime in seconds
+- `database`: Database connection status (`connected` or `disconnected`)
+
+Example response:
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-01T12:00:00.000Z",
+  "uptime": 3600,
+  "database": "connected"
+}
+```
 
 ### Create a Contact
 ```bash
@@ -80,6 +107,46 @@ DELETE /contacts/:id
 ## Database
 
 The SQLite database file (`contacts.db`) will be created automatically in the project root when you first run the application.
+
+## OpenTelemetry
+
+The project includes OpenTelemetry instrumentation with Prometheus exporter for metrics collection.
+
+### Configuration
+
+OpenTelemetry is automatically initialized when the application starts. Configure it using environment variables:
+
+- `PROMETHEUS_PORT` - Port for Prometheus metrics endpoint (default: `9464`)
+- `MONITORING_PRECISION` - Monitoring precision in milliseconds (default: `5000`)
+
+### Prometheus Metrics
+
+Metrics are exposed at: `http://localhost:9464/metrics`
+
+The runtime instrumentation captures Node.js runtime metrics including:
+- Garbage collection events
+- Event loop utilization
+- Memory usage
+- CPU usage
+
+### Example Usage
+
+```bash
+# Run with default Prometheus port (9464)
+npm run start:dev
+
+# Run with custom Prometheus port
+PROMETHEUS_PORT=9464 MONITORING_PRECISION=5000 npm run start:dev
+```
+
+### Accessing Metrics
+
+Once the application is running, you can access Prometheus metrics at:
+```
+http://localhost:9464/metrics
+```
+
+This endpoint can be scraped by Prometheus or any other monitoring system that supports Prometheus format.
 
 ## Docker
 

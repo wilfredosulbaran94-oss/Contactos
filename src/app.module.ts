@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ContactsModule } from './contacts/contacts.module';
+import { HealthModule } from './health/health.module';
 import { Contact } from './contacts/entities/contact.entity';
 
 @Module({
@@ -12,6 +13,7 @@ import { Contact } from './contacts/entities/contact.entity';
       synchronize: true, // Only for development - creates tables automatically
     }),
     ContactsModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
