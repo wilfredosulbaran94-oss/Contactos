@@ -1,6 +1,12 @@
 # Register required resource provider (Microsoft.OperationalInsights is auto-registered by Terraform)
+# If already registered, import with: terraform import azurerm_resource_provider_registration.app /subscriptions/edf5bac7-aa05-4b29-9f51-2d8c0a386a3f/providers/Microsoft.App
 resource "azurerm_resource_provider_registration" "app" {
   name = "Microsoft.App"
+
+  lifecycle {
+    create_before_destroy = false
+    prevent_destroy       = true
+  }
 }
 
 # Resource Group
