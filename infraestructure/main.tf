@@ -1,10 +1,6 @@
-# Register required resource providers
+# Register required resource provider (Microsoft.OperationalInsights is auto-registered by Terraform)
 resource "azurerm_resource_provider_registration" "app" {
   name = "Microsoft.App"
-}
-
-resource "azurerm_resource_provider_registration" "operationalinsights" {
-  name = "Microsoft.OperationalInsights"
 }
 
 # Resource Group
@@ -18,12 +14,12 @@ resource "azurerm_resource_group" "main" {
   }
 
   depends_on = [
-    azurerm_resource_provider_registration.app,
-    azurerm_resource_provider_registration.operationalinsights
+    azurerm_resource_provider_registration.app
   ]
 }
 
 # Log Analytics Workspace (required for Container Apps)
+# Microsoft.OperationalInsights is automatically registered by Terraform
 resource "azurerm_log_analytics_workspace" "main" {
   name                = "${var.app_name}-logs"
   location            = azurerm_resource_group.main.location
@@ -35,10 +31,6 @@ resource "azurerm_log_analytics_workspace" "main" {
     environment = "production"
     app         = var.app_name
   }
-
-  depends_on = [
-    azurerm_resource_provider_registration.operationalinsights
-  ]
 }
 
 # Container Apps Environment
