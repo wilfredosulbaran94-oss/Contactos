@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -8,6 +8,17 @@ import { Contact } from './entities/contact.entity';
 @Controller('contacts')
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Get all contacts' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all contacts',
+    type: [Contact],
+  })
+  findAll() {
+    return this.contactsService.findAll();
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
