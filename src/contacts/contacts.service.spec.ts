@@ -11,6 +11,7 @@ describe('ContactsService', () => {
 
   const mockRepository = {
     save: jest.fn(),
+    find: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -95,6 +96,40 @@ describe('ContactsService', () => {
 
       await expect(service.create(createContactDto)).rejects.toThrow(error);
       expect(mockRepository.save).toHaveBeenCalledWith(createContactDto);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all contacts', async () => {
+      const contacts = [
+        { id: 1, name: 'John Doe', email: 'john@example.com', phone: '+1234567890', address: '123 Main St' },
+      ];
+      mockRepository.find.mockResolvedValue(contacts);
+    });
+
+    it('should handle repository errors', async () => {
+      const error = new Error('Database error');
+      mockRepository.find.mockRejectedValue(error);
+
+      await expect(service.findAll()).rejects.toThrow(error);
+      expect(mockRepository.find).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return an empty array if no contacts are found', async () => {
+      mockRepository.find.mockResolvedValue([]);
+
+      const result = await service.findAll();
+
+      expect(result).toEqual([]);
+      expect(mockRepository.find).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return a 500 error if the repository throws an error', async () => {
+      const error = new Error('Database error');
+      mockRepository.find.mockRejectedValue(error);
+
+      await expect(service.findAll()).rejects.toThrow(error);
+      expect(mockRepository.find).toHaveBeenCalledTimes(1);
     });
   });
 });

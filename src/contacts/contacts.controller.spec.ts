@@ -10,6 +10,7 @@ describe('ContactsController', () => {
 
   const mockContactsService = {
     create: jest.fn(),
+    findAll: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -94,6 +95,45 @@ describe('ContactsController', () => {
 
       await expect(controller.create(createContactDto)).rejects.toThrow(error);
       expect(mockContactsService.create).toHaveBeenCalledWith(createContactDto);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all contacts', async () => {
+      const contacts = [
+        { id: 1, name: 'John Doe', email: 'john@example.com', phone: '+1234567890', address: '123 Main St' },
+      ];
+      mockContactsService.findAll.mockResolvedValue(contacts);
+
+      const result = await controller.findAll();
+
+      expect(result).toEqual(contacts);
+      expect(mockContactsService.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle service errors', async () => {
+      const error = new Error('Service error');
+      mockContactsService.findAll.mockRejectedValue(error);
+
+      await expect(controller.findAll()).rejects.toThrow(error);
+      expect(mockContactsService.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return an empty array if no contacts are found', async () => {
+      mockContactsService.findAll.mockResolvedValue([]);
+
+      const result = await controller.findAll();
+
+      expect(result).toEqual([]);
+      expect(mockContactsService.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return a 500 error if the service throws an error', async () => {
+      const error = new Error('Service error');
+      mockContactsService.findAll.mockRejectedValue(error);
+
+      await expect(controller.findAll()).rejects.toThrow(error);
+      expect(mockContactsService.findAll).toHaveBeenCalledTimes(1);
     });
   });
 });
